@@ -1,0 +1,897 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>US Tax Atlas — Налоги США</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #0b1120;
+  color: #f1f5f9;
+  font-family: "Segoe UI", Arial, sans-serif;
+  line-height: 1.6;
+}
+
+nav {
+  background: #111c30;
+  padding: 18px 7%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  border-bottom: 1px solid #334155;
+}
+
+.logo {
+  font-size: 21px;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+}
+
+nav a {
+  color: #cbd5e1;
+  text-decoration: none;
+  margin-right: 15px;
+}
+
+nav a:hover {
+  color: #60a5fa;
+}
+
+header {
+  padding: 90px 7%;
+  background: linear-gradient(135deg, #193153, #0b1120);
+}
+
+header h1 {
+  font-size: clamp(34px, 5vw, 58px);
+  line-height: 1.2;
+  max-width: 850px;
+}
+
+header p {
+  max-width: 700px;
+  font-size: 18px;
+}
+
+.subtitle {
+  color: #60a5fa;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+main {
+  max-width: 1150px;
+  margin: auto;
+  padding: 25px;
+}
+
+section {
+  margin: 65px 0;
+}
+
+h2 {
+  font-size: 29px;
+  margin-bottom: 12px;
+}
+
+h3 {
+  color: #93c5fd;
+}
+
+p {
+  color: #a8b7cc;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: #17243a;
+  border: 1px solid #334155;
+  border-radius: 17px;
+  padding: 25px;
+  transition: 0.25s;
+}
+
+.card:hover {
+  border-color: #60a5fa;
+  transform: translateY(-3px);
+}
+
+.big-number {
+  font-size: 30px;
+  font-weight: bold;
+  color: #86efac;
+}
+
+.table-box {
+  background: #17243a;
+  padding: 20px;
+  border-radius: 16px;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 13px;
+  text-align: left;
+  border-bottom: 1px solid #334155;
+}
+
+th {
+  color: #93c5fd;
+}
+
+.calculator {
+  background: #17243a;
+  padding: 30px;
+  border-radius: 20px;
+  border: 1px solid #334155;
+}
+
+input {
+  display: block;
+  background: #0b1120;
+  border: 1px solid #475569;
+  color: white;
+  padding: 14px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 450px;
+  margin: 12px 0;
+  font-size: 17px;
+}
+
+button {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 25px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  background: #2563eb;
+}
+
+.result {
+  background: #102b48;
+  padding: 22px;
+  border-radius: 15px;
+  margin-top: 25px;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 20px;
+}
+
+.result-value {
+  color: #86efac;
+  font-size: 26px;
+  font-weight: bold;
+}
+
+/* РАСКРЫВАЮЩИЕСЯ КАРТОЧКИ */
+
+.tax-dropdown {
+  background: #17243a;
+  border: 1px solid #334155;
+  border-radius: 15px;
+  margin: 15px 0;
+  overflow: hidden;
+}
+
+.tax-dropdown[open] {
+  border-color: #3b82f6;
+}
+
+.tax-dropdown summary {
+  padding: 22px;
+  cursor: pointer;
+  font-size: 19px;
+  font-weight: 600;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tax-dropdown summary::-webkit-details-marker {
+  display: none;
+}
+
+.tax-dropdown summary::after {
+  content: "+";
+  color: #60a5fa;
+  font-size: 26px;
+}
+
+.tax-dropdown[open] summary::after {
+  content: "−";
+}
+
+.tax-dropdown summary:hover {
+  background: #213551;
+}
+
+.tax-content {
+  padding: 0 22px 22px;
+  animation: reveal 0.25s ease;
+}
+
+.tax-highlight {
+  background: #102b48;
+  color: #93c5fd;
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 15px;
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+footer {
+  padding: 35px;
+  text-align: center;
+  color: #94a3b8;
+  border-top: 1px solid #334155;
+}
+
+a {
+  color: #93c5fd;
+}
+
+@media (max-width: 650px) {
+  header {
+    padding: 55px 25px;
+  }
+
+  main {
+    padding: 15px;
+  }
+
+  .calculator {
+    padding: 20px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <a href="#" class="logo">🇺🇸 US TAX ATLAS</a>
+  <div>
+    <a href="#federal">Федеральные</a>
+    <a href="#fica">FICA</a>
+    <a href="#calculator">Калькулятор</a>
+    <a href="#tax-guide">Все налоги</a>
+  </div>
+</nav>
+
+<header>
+  <div class="subtitle">
+    ИНТЕРАКТИВНЫЙ УЧЕБНИК · 2026
+  </div>
+
+  <h1>Как работает налоговая система США?</h1>
+
+  <p>
+    Полный образовательный справочник:
+    федеральные налоги, налоги штатов,
+    социальные взносы, таблицы и расчёты.
+  </p>
+</header>
+
+<main>
+
+<!-- ТРИ УРОВНЯ -->
+
+<section>
+  <h2>01. Устройство налоговой системы</h2>
+  <p>
+    В США существует три уровня налогообложения.
+  </p>
+
+  <div class="grid">
+
+    <div class="card">
+      <h3>🏛️ Федеральный</h3>
+      <p>
+        Федеральный подоходный налог,
+        Social Security, Medicare,
+        корпоративные налоги и акцизы.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>🗺️ Уровень штатов</h3>
+      <p>
+        Подоходные налоги штатов,
+        налоги с продаж и различные
+        налоги на предпринимательство.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>🏠 Местный уровень</h3>
+      <p>
+        Налоги на недвижимость,
+        местные налоги с продаж,
+        иногда налоги на доходы.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ФЕДЕРАЛЬНЫЙ НАЛОГ -->
+
+<section id="federal">
+  <h2>02. Federal Income Tax</h2>
+
+  <p>
+    Федеральный подоходный налог в США
+    является прогрессивным.
+    Каждая часть налогооблагаемого
+    дохода облагается по своей ставке.
+  </p>
+
+  <div class="table-box">
+    <table>
+      <tr>
+        <th>Налогооблагаемый доход (Single)</th>
+        <th>Ставка</th>
+      </tr>
+
+      <tr><td>$0 – $12,400</td><td>10%</td></tr>
+      <tr><td>$12,400 – $50,400</td><td>12%</td></tr>
+      <tr><td>$50,400 – $105,700</td><td>22%</td></tr>
+      <tr><td>$105,700 – $201,775</td><td>24%</td></tr>
+      <tr><td>$201,775 – $256,225</td><td>32%</td></tr>
+      <tr><td>$256,225 – $640,600</td><td>35%</td></tr>
+      <tr><td>Свыше $640,600</td><td>37%</td></tr>
+    </table>
+  </div>
+
+  <div class="tax-highlight">
+    Стандартный налоговый вычет в 2026 году
+    для статуса Single составляет $16,100.
+  </div>
+</section>
+
+<!-- СОЦИАЛЬНЫЕ НАЛОГИ -->
+
+<section id="fica">
+  <h2>03. Social Security и Medicare</h2>
+
+  <p>
+    FICA — федеральные налоги
+    на трудовые доходы для финансирования
+    социальных программ.
+  </p>
+
+  <div class="grid">
+
+    <div class="card">
+      <h3>Social Security</h3>
+      <div class="big-number">6.2%</div>
+      <p>
+        Платит работник.
+        Работодатель дополнительно платит 6.2%.
+      </p>
+      <p>
+        В 2026 году налог начисляется
+        на заработок до $184,500.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Medicare</h3>
+      <div class="big-number">1.45%</div>
+      <p>
+        Платит работник.
+        Работодатель дополнительно платит 1.45%.
+      </p>
+      <p>
+        У основного налога Medicare
+        нет верхнего ограничения базы.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Additional Medicare</h3>
+      <div class="big-number">0.9%</div>
+      <p>
+        Дополнительный налог для
+        высоких трудовых доходов.
+      </p>
+      <p>
+        Для статуса Single
+        порог составляет $200,000.
+      </p>
+    </div>
+
+  </div>
+
+  <div class="tax-highlight">
+    При зарплате $80,000 работник обычно платит
+    $4,960 Social Security и $1,160 Medicare.
+    Всего: $6,120.
+  </div>
+</section>
+
+<!-- КАЛЬКУЛЯТОР -->
+
+<section id="calculator">
+  <h2>04. Калькулятор налогов</h2>
+
+  <p>
+    Введи годовую зарплату в долларах.
+    Калькулятор рассчитает федеральный
+    подоходный налог и FICA.
+  </p>
+
+  <div class="calculator">
+
+    <label for="salary">Годовая зарплата ($)</label>
+
+    <input
+      type="number"
+      id="salary"
+      value="80000"
+      min="0"
+      step="100"
+    >
+
+    <button onclick="calculateTax()">
+      Рассчитать налоги
+    </button>
+
+    <div class="result">
+
+      <div class="result-grid">
+
+        <div>
+          <p>Income Tax</p>
+          <div class="result-value" id="incomeTax">
+            $0
+          </div>
+        </div>
+
+        <div>
+          <p>FICA</p>
+          <div class="result-value" id="ficaTax">
+            $0
+          </div>
+        </div>
+
+        <div>
+          <p>Всего налогов</p>
+          <div class="result-value" id="totalTax">
+            $0
+          </div>
+        </div>
+
+        <div>
+          <p>Остаток после налогов</p>
+          <div class="result-value" id="netIncome">
+            $0
+          </div>
+        </div>
+
+      </div>
+
+      <p id="taxableIncome"></p>
+      <p id="averageRate"></p>
+
+    </div>
+
+    <details class="tax-dropdown">
+      <summary>
+        Показать подробный расчёт
+      </summary>
+
+      <div class="tax-content">
+        <div class="table-box">
+          <table>
+            <thead>
+              <tr>
+                <th>Часть дохода</th>
+                <th>Ставка</th>
+                <th>Налог</th>
+              </tr>
+            </thead>
+            <tbody id="breakdown"></tbody>
+          </table>
+        </div>
+      </div>
+    </details>
+
+    <p>
+      Калькулятор учебный: Single, стандартный
+      вычет, зарплата без других доходов.
+      Налоги штатов, специальные льготы
+      и индивидуальные обстоятельства
+      не учитываются.
+    </p>
+
+  </div>
+</section>
+
+<!-- ИНТЕРАКТИВНЫЕ КАРТОЧКИ -->
+
+<section id="tax-guide">
+  <h2>05. Интерактивный справочник</h2>
+
+  <p>
+    Нажми на название налога,
+    чтобы открыть подробное объяснение.
+  </p>
+
+  <details class="tax-dropdown">
+    <summary>💵 Federal Income Tax</summary>
+
+    <div class="tax-content">
+      <h3>Федеральный подоходный налог</h3>
+
+      <p>
+        В США используется прогрессивная система.
+        Более высокая ставка применяется
+        только к соответствующей части дохода.
+      </p>
+
+      <div class="tax-highlight">
+        Ставки: 10%, 12%, 22%, 24%,
+        32%, 35%, 37%.
+      </div>
+    </div>
+  </details>
+
+  <details class="tax-dropdown">
+    <summary>🏛️ Social Security и Medicare</summary>
+
+    <div class="tax-content">
+      <h3>Социальные налоги</h3>
+
+      <p>
+        Работник обычно перечисляет 6.2%
+        на Social Security в пределах
+        установленного лимита и 1.45%
+        на Medicare.
+      </p>
+
+      <div class="tax-highlight">
+        Базовая совокупная ставка
+        для работника — 7.65%.
+      </div>
+    </div>
+  </details>
+
+  <details class="tax-dropdown">
+    <summary>🛒 Sales Tax</summary>
+
+    <div class="tax-content">
+      <h3>Налог с продаж</h3>
+
+      <p>
+        В США нет единого федерального
+        налога с розничных продаж.
+        Многие штаты и местные власти
+        устанавливают собственный Sales Tax.
+      </p>
+
+      <p>
+        Налог обычно добавляется к цене
+        облагаемой покупки.
+      </p>
+
+      <div class="tax-highlight">
+        Налог = облагаемая стоимость
+        покупки × ставка Sales Tax.
+      </div>
+    </div>
+  </details>
+
+  <details class="tax-dropdown">
+    <summary>🏠 Property Tax</summary>
+
+    <div class="tax-content">
+      <h3>Налог на недвижимость</h3>
+
+      <p>
+        Обычно устанавливается
+        местными органами власти.
+      </p>
+
+      <p>
+        Размер налога зависит от
+        налогооблагаемой стоимости имущества
+        и местной ставки.
+      </p>
+
+      <div class="tax-highlight">
+        Property Tax =
+        налогооблагаемая стоимость × ставка.
+      </div>
+    </div>
+  </details>
+
+  <details class="tax-dropdown">
+    <summary>🏢 Corporate Income Tax</summary>
+
+    <div class="tax-content">
+      <h3>Налог на прибыль корпораций</h3>
+
+      <p>
+        Обычная федеральная ставка
+        налога на прибыль C-corporations
+        составляет 21%.
+      </p>
+
+      <p>
+        Отдельные штаты могут дополнительно
+        устанавливать налоги на прибыль бизнеса.
+      </p>
+
+      <div class="tax-highlight">
+        Налог начисляется на
+        налогооблагаемую прибыль, а не выручку.
+      </div>
+    </div>
+  </details>
+
+  <details class="tax-dropdown">
+    <summary>📈 Capital Gains Tax</summary>
+
+    <div class="tax-content">
+      <h3>Налог на прирост капитала</h3>
+
+      <p>
+        Возникает при продаже активов
+        с прибылью, например акций.
+      </p>
+
+      <p>
+        Налогообложение зависит
+        от срока владения, дохода
+        и типа актива.
+      </p>
+
+      <div class="tax-highlight">
+        Прибыль от продажи =
+        цена продажи − налоговая стоимость актива.
+      </div>
+    </div>
+  </details>
+
+</section>
+
+<!-- ИСТОЧНИКИ -->
+
+<section>
+  <h2>06. Официальные источники</h2>
+
+  <div class="card">
+    <h3>Налоговое законодательство США</h3>
+
+    <p>
+      Для проверки налоговых правил
+      используй официальные источники.
+    </p>
+
+    <p>
+      <a href="https://www.irs.gov/"
+         target="_blank" rel="noopener">
+        IRS — налоговая служба США
+      </a>
+    </p>
+
+    <p>
+      <a href="https://www.ssa.gov/"
+         target="_blank" rel="noopener">
+        SSA — Social Security Administration
+      </a>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  US TAX ATLAS · Образовательный проект · 2026
+</footer>
+
+<script>
+
+// Федеральные налоговые ступени 2026
+// Для статуса Single
+
+const brackets = [
+  { max: 12400, rate: 0.10 },
+  { max: 50400, rate: 0.12 },
+  { max: 105700, rate: 0.22 },
+  { max: 201775, rate: 0.24 },
+  { max: 256225, rate: 0.32 },
+  { max: 640600, rate: 0.35 },
+  { max: Infinity, rate: 0.37 }
+];
+
+function formatMoney(value) {
+  return value.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD"
+  });
+}
+
+function calculateTax() {
+
+  const input = document.getElementById("salary");
+  const salary = Number(input.value);
+
+  if (
+    input.value.trim() === "" ||
+    !Number.isFinite(salary) ||
+    salary < 0
+  ) {
+    alert("Введите корректную зарплату");
+    return;
+  }
+
+  // Стандартный вычет 2026
+  const deduction = 16100;
+
+  const taxable = Math.max(0, salary - deduction);
+
+  // Расчёт прогрессивного Income Tax
+
+  let incomeTax = 0;
+  let previousLimit = 0;
+  let details = [];
+
+  for (const bracket of brackets) {
+
+    const taxablePart = Math.max(
+      0,
+      Math.min(taxable, bracket.max) - previousLimit
+    );
+
+    const partTax = taxablePart * bracket.rate;
+
+    if (taxablePart > 0) {
+      incomeTax += partTax;
+
+      details.push({
+        amount: taxablePart,
+        rate: bracket.rate,
+        tax: partTax
+      });
+    }
+
+    previousLimit = bracket.max;
+
+    if (taxable <= bracket.max) {
+      break;
+    }
+  }
+
+  // Расчёт FICA
+
+  const socialSecurity =
+    Math.min(salary, 184500) * 0.062;
+
+  const medicare = salary * 0.0145;
+
+  const additionalMedicare =
+    Math.max(0, salary - 200000) * 0.009;
+
+  const fica =
+    socialSecurity + medicare + additionalMedicare;
+
+  // Общие суммы
+
+  const totalTax = incomeTax + fica;
+  const netIncome = salary - totalTax;
+
+  const averageRate = salary > 0
+    ? totalTax / salary * 100
+    : 0;
+
+  // Вывод результатов
+
+  document.getElementById("incomeTax").textContent =
+    formatMoney(incomeTax);
+
+  document.getElementById("ficaTax").textContent =
+    formatMoney(fica);
+
+  document.getElementById("totalTax").textContent =
+    formatMoney(totalTax);
+
+  document.getElementById("netIncome").textContent =
+    formatMoney(netIncome);
+
+  document.getElementById("taxableIncome").textContent =
+    "Налогооблагаемый доход: " +
+    formatMoney(taxable);
+
+  document.getElementById("averageRate").textContent =
+    "Общая доля этих налогов: " +
+    averageRate.toFixed(2) + "%";
+
+  // Подробная таблица расчёта
+
+  const tbody = document.getElementById("breakdown");
+
+  tbody.innerHTML = "";
+
+  for (const row of details) {
+
+    const tr = document.createElement("tr");
+
+    const values = [
+      formatMoney(row.amount),
+      (row.rate * 100) + "%",
+      formatMoney(row.tax)
+    ];
+
+    for (const value of values) {
+      const td = document.createElement("td");
+      td.textContent = value;
+      tr.appendChild(td);
+    }
+
+    tbody.appendChild(tr);
+  }
+
+  if (details.length === 0) {
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.colSpan = 3;
+    td.textContent = "Налогооблагаемый доход равен нулю";
+    tr.appendChild(td);
+    tbody.appendChild(tr);
+  }
+}
+
+// Первый расчёт автоматически
+calculateTax();
+
+</script>
+
+</body>
+</html>
